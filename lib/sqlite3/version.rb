@@ -2,9 +2,9 @@ module SQLite3
 
   module Version
 
-    MAJOR = 1
-    MINOR = 2
-    TINY  = 4
+    MAJOR = 0
+    MINOR = 1
+    TINY  = 0
 
     STRING = [ MAJOR, MINOR, TINY ].join( "." )
     #:beta-tag:

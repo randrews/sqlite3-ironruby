@@ -87,17 +87,17 @@ class TC_Database < Test::Unit::TestCase
     @db.close
   end
 
-  def test_trace
-    Driver.any_instance.expects(:trace).with('cookie', 15)
-    @db.trace( 15 ) { "foo" }
-    # assert_equal 1, driver.mock_blocks[:trace].length
-  end
+  #def test_trace
+  #  Driver.any_instance.expects(:trace).with('cookie', 15)
+  #  @db.trace( 15 ) { "foo" }
+  #  # assert_equal 1, driver.mock_blocks[:trace].length
+  #end
 
-  def test_authorizer
-    Driver.any_instance.expects(:set_authorizer).with('cookie', 15).returns(0)
-    @db.authorizer( 15 ) { "foo" }
-    # assert_equal 1, driver.mock_blocks[:set_authorizer].length
-  end
+  #def test_authorizer
+  #  Driver.any_instance.expects(:set_authorizer).with('cookie', 15).returns(0)
+  #  @db.authorizer( 15 ) { "foo" }
+  #  # assert_equal 1, driver.mock_blocks[:set_authorizer].length
+  #end
 
   def test_prepare_no_block
     Statement.any_instance.expects(:close).never

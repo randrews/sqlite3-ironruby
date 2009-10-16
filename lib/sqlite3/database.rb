@@ -75,7 +75,7 @@ module SQLite3
 
       @statement_factory = options[:statement_factory] || Statement
 
-      result, @handle = @driver.open( file_name, utf16 )
+      result, @handle = @driver.open( file_name )
       Error.check( result, self, "could not open database" )
 
       @closed = false
@@ -89,13 +89,13 @@ module SQLite3
     # +false+ otherwise. If +utf16+ is +true+, then the string is a UTF-16
     # character string.
     def complete?( string, utf16=false )
-      @driver.complete?( string, utf16 )
+      @driver.complete?( string )
     end
 
     # Return a string describing the last error to have occurred with this
     # database.
     def errmsg( utf16=false )
-      @driver.errmsg( @handle, utf16 )
+      @driver.errmsg( @handle )
     end
 
     # Return an integer representing the last error to have occurred with this
@@ -132,18 +132,18 @@ module SQLite3
     # statement executed. The block receives a two parameters: the +data+
     # argument, and the SQL statement executed. If the block is +nil+,
     # any existing tracer will be uninstalled.
-    def trace( data=nil, &block )
-      @driver.trace( @handle, data, &block )
-    end
+    #def trace( data=nil, &block )
+    #  @driver.trace( @handle, data, &block )
+    #end
 
     # Installs (or removes) a block that will be invoked for every access
     # to the database. If the block returns 0 (or +nil+), the statement
     # is allowed to proceed. Returning 1 causes an authorization error to
     # occur, and returning 2 causes the access to be silently denied.
-    def authorizer( data=nil, &block )
-      result = @driver.set_authorizer( @handle, data, &block )
-      Error.check( result, self )
-    end
+    #def authorizer( data=nil, &block )
+    #  result = @driver.set_authorizer( @handle, data, &block )
+    #  Error.check( result, self )
+    #end
 
     # Returns a Statement object representing the given SQL. This does not
     # execute the statement; it merely prepares the statement for execution.
@@ -318,10 +318,10 @@ module SQLite3
     # +ms+ parameter.
     #
     # See also the mutually exclusive #busy_handler.
-    def busy_timeout( ms )
-      result = @driver.busy_timeout( @handle, ms )
-      Error.check( result, self )
-    end
+    #def busy_timeout( ms )
+    #  result = @driver.busy_timeout( @handle, ms )
+    #  Error.check( result, self )
+    #end
 
     # Creates a new function for use in SQL statements. It will be added as
     # +name+, with the given +arity+. (For variable arity functions, use
@@ -346,25 +346,25 @@ module SQLite3
     #   end
     #
     #   puts db.get_first_value( "select maim(name) from table" )
-    def create_function( name, arity, text_rep=Constants::TextRep::ANY,
-      &block ) # :yields: func, *args
-    # begin
-      callback = proc do |func,*args|
-        begin
-          block.call( FunctionProxy.new( @driver, func ),
-            *args.map{|v| Value.new(self,v)} )
-        rescue StandardError, Exception => e
-          @driver.result_error( func,
-            "#{e.message} (#{e.class})", -1 )
-        end
-      end
-
-      result = @driver.create_function( @handle, name, arity, text_rep, nil,
-        callback, nil, nil )
-      Error.check( result, self )
-
-      self
-    end
+    #def create_function( name, arity, text_rep=Constants::TextRep::ANY,
+    #  &block ) # :yields: func, *args
+    ## begin
+    #  callback = proc do |func,*args|
+    #    begin
+    #      block.call( FunctionProxy.new( @driver, func ),
+    #        *args.map{|v| Value.new(self,v)} )
+    #    rescue StandardError, Exception => e
+    #      @driver.result_error( func,
+    #        "#{e.message} (#{e.class})", -1 )
+    #    end
+    #  end
+    #
+    #  result = @driver.create_function( @handle, name, arity, text_rep, nil,
+    #    callback, nil, nil )
+    #  Error.check( result, self )
+    #
+    #  self
+    #end
 
     # Creates a new aggregate function for use in SQL statements. Aggregate
     # functions are functions that apply over every row in the result set,
@@ -608,7 +608,7 @@ module SQLite3
           require "sqlite3/driver/#{driver.to_s.downcase}/driver"
           driver = SQLite3::Driver.const_get( driver )::Driver
         else
-          [ "Native", "DL" ].each do |d|
+          [ "Native" ].each do |d|
             begin
               require "sqlite3/driver/#{d.downcase}/driver"
               driver = SQLite3::Driver.const_get( d )::Driver
@@ -653,7 +653,7 @@ module SQLite3
       # Set the result of the function to the given value. The function will
       # then return this value.
       def set_result( result, utf16=false )
-        @driver.result_text( @func, result, utf16 )
+        @driver.result_text( @func, result )
       end
 
       # Set the result of the function to the given error message.
