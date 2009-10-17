@@ -18,15 +18,15 @@ module SQLite3 ; module Driver ; module Native
 
     def open(filename)
       #CSSQLite.sqlite3_open(filename, CSSQLite::SQLite3.new)
-      CSSQLite.sqlite3_open(filename, nil)
+      CSSQLite.sqlite3_open( filename, nil )
     end
 
     def prepare(db, sql)
-      CSSQLite.sqlite3_prepare(db, sql, -1, CSSQLite::Vdbe.new, "")
+      CSSQLite.sqlite3_prepare( db, sql, -1, nil, nil )
     end
 
     def bind_text( stmt, index, value, utf16=false )
-      CSSQLite.sqlite3_bind_text( stmt, index, value.to_s )
+      CSSQLite.sqlite3_bind_text( stmt, index, value.to_s, -1, nil )
     end
 
     #def busy_handler( db, data=nil, &block )
