@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
    s.summary = "SQLite3/IronRuby is a module to allow Ruby scripts running on the IronRuby interpreter to interface with a SQLite3 database."
 
-   s.files = Dir.glob("{doc,ext,lib,test}/**/*")
+   s.files = Dir.glob("{lib,test}/**/*")
    s.files.concat [ "LICENSE", "README.rdoc", "CHANGELOG.rdoc" ]
 
    s.require_path = 'lib'
