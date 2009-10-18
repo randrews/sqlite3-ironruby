@@ -346,25 +346,21 @@ module SQLite3
     #   end
     #
     #   puts db.get_first_value( "select maim(name) from table" )
-    #def create_function( name, arity, text_rep=Constants::TextRep::ANY,
-    #  &block ) # :yields: func, *args
-    ## begin
-    #  callback = proc do |func,*args|
-    #    begin
-    #      block.call( FunctionProxy.new( @driver, func ),
-    #        *args.map{|v| Value.new(self,v)} )
-    #    rescue StandardError, Exception => e
-    #      @driver.result_error( func,
-    #        "#{e.message} (#{e.class})", -1 )
-    #    end
-    #  end
-    #
-    #  result = @driver.create_function( @handle, name, arity, text_rep, nil,
-    #    callback, nil, nil )
-    #  Error.check( result, self )
-    #
-    #  self
-    #end
+    def create_function( name, arity, text_rep=Constants::TextRep::ANY, &block ) # :yields: func, *args
+    # begin
+      callback = proc do |func,*args|
+        begin
+          block.call( FunctionProxy.new( @driver, func ), *args.map{|v| Value.new(self,v)} )
+        rescue StandardError, Exception => e
+          @driver.result_error( func, "#{e.message} (#{e.class})", -1 )
+        end
+      end
+
+      result = @driver.create_function( @handle, name, arity, text_rep, nil, callback, nil, nil )
+      Error.check( result, self )
+    
+      self
+    end
 
     # Creates a new aggregate function for use in SQL statements. Aggregate
     # functions are functions that apply over every row in the result set,

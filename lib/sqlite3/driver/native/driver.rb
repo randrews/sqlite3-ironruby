@@ -2,6 +2,10 @@ require 'sqlite3/driver/native/Community.Data.SQLite'
 
 module SQLite3 ; module Driver ; module Native
 
+  class CallbackData
+    attr_accessor :proc, :proc2, :data
+  end
+
   class Driver
     include CS_SQLite3
 
@@ -17,7 +21,6 @@ module SQLite3 ; module Driver ; module Native
     end
 
     def open(filename)
-      #CSSQLite.sqlite3_open(filename, CSSQLite::SQLite3.new)
       CSSQLite.sqlite3_open( filename, nil )
     end
 
@@ -77,39 +80,43 @@ module SQLite3 ; module Driver ; module Native
     #
     #  result
     #end  
-    #
-    #def create_function( db, name, args, text, cookie, func, step, final )
-    #  if func || ( step && final )
-    #    cb = API::CallbackData.new
-    #    cb.proc = cb.proc2 = nil
-    #    cb.data = cookie
-    #  end
-    #
-    #  if func
-    #    cb.proc = func
-    #
-    #    func = API::Sqlite3_ruby_function_step
-    #    step = final = nil
-    #  elsif step && final
-    #    cb.proc = step
-    #    cb.proc2 = final
-    #
-    #    func = nil
-    #    step = API::Sqlite3_ruby_function_step
-    #    final = API::Sqlite3_ruby_function_final
-    #  end
-    #
-    #  result = API.sqlite3_create_function( db, name, args, text, cb, func, step, final )
-    #
-    #  # see comments in busy_handler
-    #  if cb
-    #    @callback_data[ name ] = cb
-    #  else
-    #    @callback_data.delete( name )
-    #  end
-    #
-    #  return result
-    #end
+
+    def create_function( db, name, args, text, cookie, func, step, final )
+      if func || ( step && final )
+        cb = CallbackData.new
+        cb.proc = cb.proc2 = nil
+        cb.data = cookie
+      end
+
+      if func
+        cb.proc = func
+        step = final = nil
+      elsif step && final
+        cb.proc = step
+        cb.proc2 = final
+
+        func = nil
+      end
+
+      result = CSSQLite.sqlite3_create_function( db, name, args, text, cb, func, step, final )
+
+      # see comments in busy_handler
+      if cb
+        @callback_data[ name ] = cb
+      else
+        @callback_data.delete( name )
+      end
+
+      return result
+    end
+
+    def aggregate_context( context, n = 0)
+      CSSQLite.sqlite3_aggregate_context( context, n ).to_a
+    end
+
+    def result_text( context, result, utf16=false )
+      CSSQLite.sqlite3_result_text( context, result.to_s, -1, nil )
+    end
 
     def self.api_delegate( name )
       eval "def #{name} (*args) ; CSSQLite.sqlite3_#{name}( *args ) ; end"
@@ -162,10 +169,7 @@ module SQLite3 ; module Driver ; module Native
     api_delegate :result_int
     api_delegate :result_int64
     api_delegate :result_null
-    api_delegate :result_text
     api_delegate :result_value
-    api_delegate :aggregate_context
-
   end
 
 end ; end ; end
