@@ -222,7 +222,7 @@ module SQLite3
       rows.each do |row|
         new_row = {}
         columns.each_with_index do |name, index|
-          new_row[name] = row[index]
+          new_row[name.to_s] = row[index]
         end
 
         tweak_default(new_row) if needs_tweak_default
