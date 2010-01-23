@@ -318,10 +318,10 @@ module SQLite3
     # +ms+ parameter.
     #
     # See also the mutually exclusive #busy_handler.
-#    def busy_timeout( ms )
-#      result = @driver.busy_timeout( @handle, ms )
-#      Error.check( result, self )
-#    end
+    def busy_timeout( ms )
+      result = @driver.busy_timeout( @handle, ms )
+      Error.check( result, self )
+    end
 
     # Creates a new function for use in SQL statements. It will be added as
     # +name+, with the given +arity+. (For variable arity functions, use
