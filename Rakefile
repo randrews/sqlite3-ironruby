@@ -4,7 +4,7 @@ require 'rake/testtask'
 
 require "./lib/sqlite3/version"
 
-PACKAGE_NAME = "sqlite3-ruby"
+PACKAGE_NAME = "sqlite3-ironruby"
 PACKAGE_VERSION = SQLite3::Version::STRING
 
 puts "name   : #{PACKAGE_NAME}"
