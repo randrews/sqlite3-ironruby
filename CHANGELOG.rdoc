@@ -1,3 +1,9 @@
+=== 0.1.1
+
+* Incorporated commits from casualjim to resolve compatibility issues with
+  Rails 2.3.5
+* Incorporated commits from firien to resolve issues with ActiveRecord.
+
 === 0.1.0
 
 * Initial port of sqlite3-ruby to use the C#-SQLite project as base for new,
