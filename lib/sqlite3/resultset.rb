@@ -121,8 +121,8 @@ module SQLite3
         end
 
         if @db.results_as_hash
-          new_row = HashWithTypes[ *( @stmt.columns.zip( row ).to_a.flatten ) ]
-          row.each_with_index { |value,idx| new_row[idx] = value }
+          new_row = HashWithTypes[ *( @stmt.columns.zip( row ).to_a.flatten.map { |c| c.to_s } ) ]
+          row.each_with_index { |value,idx| new_row[idx] = value.to_s }
           row = new_row
         else
           if row.respond_to?(:fields)
