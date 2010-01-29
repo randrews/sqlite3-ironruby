@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
 
    s.author = "James Thompson"
    s.email = "james@plainprograms.com"
-   s.homepage = "http://github.com/jwthompson2/sqlite3-ironruby"
+   s.homepage = "http://github.com/plainprogrammer/sqlite3-ironruby"
 
 end
