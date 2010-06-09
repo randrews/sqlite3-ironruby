@@ -44,6 +44,7 @@ module SQLite3
     # and are always passed straight through regardless of the type parameter.
     def translate( type, value )
       unless value.nil?
+        value = value.to_s if value.is_a? System::String
         @translators[ type_name( type ) ].call( type, value )
       end
     end
